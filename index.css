@@ -1,0 +1,12 @@
+/* application css */
+#main {font-size:200%;}
+.hl {color:red;}
+.row {margin-left: 5px; margin-right: -10px; margin-bottom: 0px; width:99.9%;}
+.col-md-4{border-right:#ccc 5px solid;}
+
+/*center tab*/
+.nav-tabs > li, .nav-pills > li {float:none; display:inline-block;}
+.nav-tabs {text-align:center;}
+
+.controlbar {position: absolute;top: 0;left: 0;right: 10px;z-index: 999;width: 97%;height: 100px;background-color: rgba(255,255,255,0.9);color: #178918;}
+.showtext {padding-top:50px;}
