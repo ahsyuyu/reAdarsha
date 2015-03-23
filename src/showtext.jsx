@@ -3,6 +3,7 @@ var actions=require("./actions");
 var Showtext=React.createClass({
 render:function() {
 		return <div className="showtext" >
+      		
       		rendering Showtext
       	</div>
 	}

@@ -1,35 +1,36 @@
 var Reflux=require("reflux");
+var React=require("react");
 var actions=require("./actions");
+var kde=require("ksana-database");  // Ksana Database Engine
+
 var store=Reflux.createStore({
 	listenables:actions //讓action.js內的add自動綁定這裡的onAdd, clear自動綁定onClear
-	,data:[]
-	,onAdd:function(item) {
-		this.data.push({name:item,done:false});
-		this.trigger(this.data); //告訴大家data有更動
+	,db:[]
+	,genToc:function(texts,depths,voffs){
+		var toc=[{depth:0,text:"འཇང་བཀའ་འགྱུར།"}];
+		for(var i=0; i<texts.length; i++){
+		  toc.push({text:texts[i],depth:depths[i],voff:voffs[i]});
+		}
+		this.trigger(toc);
+		return toc; 
 	}
-	,onClear:function() {
-		this.data=[];
-		this.trigger(this.data);
+	,onReady:function(usage,quota) {
+		var that=this;
+		if (this.db.length == 0) kde.open("jiangkangyur",function(a,db){
+			that.trigger(db);  
+		    db.get([["fields","head"],["fields","head_depth"],["fields","head_voff"]],function(){
+		      var heads=db.get(["fields","head"]);
+		      var depths=db.get(["fields","head_depth"]);
+		      var voffs=db.get(["fields","head_voff"]);
+		      var toc=this.genToc(heads,depths,voffs);
+		      this.toc=toc;		 
+		    }); //載入目錄
+		},this);    
+		
+		//this.trigger(this.db); 
+		//this.setState({dialog:false,quota:quota,usage:usage});
 	}
-	,onToggleDone:function(idx){
-		this.data[idx].done=!this.data[idx].done;
-		this.trigger(this.data);
-	}
-	,onClearDone:function() {
-		this.data=this.data.filter(function(item){
-			return !item.done;
-		});
-		this.trigger(this.data);
-	}
-	// ,onGetNumOfLeftItem:function() {
-	// 	var c=0;
-	// 	this.data.map(function(item){
-	// 		if(!item.done) c++;
-	// 	});
-	// 	this.counter=c;
-	// 	console.log(c);
-	// 	this.trigger(this.counter);
-	// }
+
 });
 
 module.exports=store;
