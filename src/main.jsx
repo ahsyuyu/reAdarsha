@@ -1,8 +1,9 @@
 var React=require("react");
 var Reflux=require("reflux");
 var actions=require("./actions");
-var store=require("./store");
-var kse=require("ksana-search"); // Ksana Search Engine (run at client side)
+var store_toc=require("./store_toc");
+var store_text=require("./store_text");
+//var api_text=require("./api_text");
 var Fileinstaller=require("ksana2015-webruntime").fileinstaller;
 var require_kdb=[{
   filename:"jiangkangyur.kdb"  , 
@@ -12,7 +13,7 @@ var Tabarea=require("./tabarea.jsx");
 var Textarea=require("./textarea.jsx");
 
 var Maincomponent = React.createClass({
-  mixins:[Reflux.listenTo(store,"onStore")],
+  mixins:[Reflux.listenTo(store_toc,"onStore")],
   getInitialState: function() {
   	fi=this.openFileinstaller(false);
   	return {fi:fi};
@@ -27,29 +28,12 @@ var Maincomponent = React.createClass({
     }
     return <Fileinstaller quota="512M" autoclose={autoclose} needed={require_kdb} 
                      onReady={actions.ready()}/>
-
   },
-  showText:function(n) {
-    var res=this.state.db.fileSegFromVpos(this.state.toc[n].voff);
-    if(res.file != -1) this.showPage(res.file,res.seg);
-    this.setState({dataN:n});    
-  },
-  showPage:function(f,p,tofind) {  
-    //window.location.hash = this.encodeHashTag(f,p);
-    var that=this;
-    var pagename=this.state.db.getFileSegNames(f)[p];
-    this.setState({scrollto:pagename});
-
-    kse.highlightFile(this.state.db,f,{q:this.state.tofind || tofind,token:true},function(data){//kde
-      that.setState({bodytext:data,page:p});
-    });
-  }, 
   render: function() {
-
     return <div className="row">
       {this.state.fi}
       <div className="col-md-4">
-      	<Tabarea toc={this.state.toc} showText={this.showText} />
+      	<Tabarea />
       </div>
       <div className="col-md-8">
       	<Textarea />

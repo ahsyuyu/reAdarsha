@@ -2,6 +2,7 @@ var React=require("react");
 var actions=require("./actions");
 var Stacktoc=require("ksana2015-stacktoc").component;  //載入目錄顯示元件
 var Searcharea=require("./searcharea.jsx");
+var Catalogarea=require("./catalogarea.jsx")
 var Tabarea=React.createClass({
   	clearDone:function() {
 		actions.clearDone();
@@ -19,10 +20,7 @@ var Tabarea=React.createClass({
 
           <div className="tab-content" ref="tab-content">
             <div className="tab-pane fade in active" id="Catalog">               
-              <Stacktoc className="stacktoc" textConverter={this.textConverter} showText={this.props.showText} showExcerpt={this.showExcerpt} 
-              opts={{tocbar:"banner/bar.png",tocbar_start:"banner/bar_start.png",stopAt:"་",
-              maxitemlength:42,tocstyle:"vertical_line"}}
-              data={this.props.toc} />
+            	<Catalogarea />
             </div> 
             <div className="tab-pane fade" id="Search">
               <Searcharea />

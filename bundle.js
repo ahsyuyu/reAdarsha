@@ -6635,15 +6635,52 @@ runtime.boot("reAdarsha",function(){
 var Reflux=require("reflux");
 var actions=Reflux.createActions([
 	"ready"
-	,"clear"
+	,"showPage"
 ]);
 module.exports=actions;
-},{"reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/main.jsx":[function(require,module,exports){
+},{"reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/catalogarea.jsx":[function(require,module,exports){
 var React=require("react");
 var Reflux=require("reflux");
 var actions=require("./actions");
-var store=require("./store");
-var kse=require("ksana-search"); // Ksana Search Engine (run at client side)
+var Stacktoc=require("ksana2015-stacktoc").component;  //載入目錄顯示元件
+var store_toc=require("./store_toc");
+var Searcharea=require("./searcharea.jsx");
+
+var Catalogarea=React.createClass({displayName: "Catalogarea",
+  mixins:[Reflux.listenTo(store_toc,"onStore")],
+  getInitialState: function() {
+    return {toc:""};
+  },
+  onStore: function(data){
+    if(data.length) this.setState({toc:data});
+    else this.setState({db:data});
+  },
+  showText:function(n) {
+    var res=this.state.db.fileSegFromVpos(this.state.toc[n].voff);
+    if(res.file != -1) actions.showPage(res.file,res.seg); //this.showPage(res.file,res.seg);
+    this.setState({dataN:n});    
+    //console.log(api_text.showText(n,this.state.toc));
+  },
+	render:function() {
+		return React.createElement("div", null, 
+          React.createElement(Stacktoc, {className: "stacktoc", textConverter: this.textConverter, showText: this.showText, showExcerpt: this.showExcerpt, 
+          opts: {tocbar:"banner/bar.png",tocbar_start:"banner/bar_start.png",stopAt:"་",
+          maxitemlength:42,tocstyle:"vertical_line"}, 
+          data: this.state.toc})
+      	);
+	}
+});
+
+module.exports=Catalogarea;
+
+
+},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","./searcharea.jsx":"/Users/yu/ksana2015/reAdarsha/src/searcharea.jsx","./store_toc":"/Users/yu/ksana2015/reAdarsha/src/store_toc.js","ksana2015-stacktoc":"/Users/yu/ksana2015/node_modules/ksana2015-stacktoc/index.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/main.jsx":[function(require,module,exports){
+var React=require("react");
+var Reflux=require("reflux");
+var actions=require("./actions");
+var store_toc=require("./store_toc");
+var store_text=require("./store_text");
+//var api_text=require("./api_text");
 var Fileinstaller=require("ksana2015-webruntime").fileinstaller;
 var require_kdb=[{
   filename:"jiangkangyur.kdb"  , 
@@ -6653,7 +6690,7 @@ var Tabarea=require("./tabarea.jsx");
 var Textarea=require("./textarea.jsx");
 
 var Maincomponent = React.createClass({displayName: "Maincomponent",
-  mixins:[Reflux.listenTo(store,"onStore")],
+  mixins:[Reflux.listenTo(store_toc,"onStore")],
   getInitialState: function() {
   	fi=this.openFileinstaller(false);
   	return {fi:fi};
@@ -6668,29 +6705,12 @@ var Maincomponent = React.createClass({displayName: "Maincomponent",
     }
     return React.createElement(Fileinstaller, {quota: "512M", autoclose: autoclose, needed: require_kdb, 
                      onReady: actions.ready()})
-
   },
-  showText:function(n) {
-    var res=this.state.db.fileSegFromVpos(this.state.toc[n].voff);
-    if(res.file != -1) this.showPage(res.file,res.seg);
-    this.setState({dataN:n});    
-  },
-  showPage:function(f,p,tofind) {  
-    //window.location.hash = this.encodeHashTag(f,p);
-    var that=this;
-    var pagename=this.state.db.getFileSegNames(f)[p];
-    this.setState({scrollto:pagename});
-
-    kse.highlightFile(this.state.db,f,{q:this.state.tofind || tofind,token:true},function(data){//kde
-      that.setState({bodytext:data,page:p});
-    });
-  }, 
   render: function() {
-
     return React.createElement("div", {className: "row"}, 
       this.state.fi, 
       React.createElement("div", {className: "col-md-4"}, 
-      	React.createElement(Tabarea, {toc: this.state.toc, showText: this.showText})
+      	React.createElement(Tabarea, null)
       ), 
       React.createElement("div", {className: "col-md-8"}, 
       	React.createElement(Textarea, null)
@@ -6699,7 +6719,7 @@ var Maincomponent = React.createClass({displayName: "Maincomponent",
   }
 });
 module.exports=Maincomponent;
-},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","./store":"/Users/yu/ksana2015/reAdarsha/src/store.js","./tabarea.jsx":"/Users/yu/ksana2015/reAdarsha/src/tabarea.jsx","./textarea.jsx":"/Users/yu/ksana2015/reAdarsha/src/textarea.jsx","ksana-search":"/Users/yu/ksana2015/node_modules/ksana-search/index.js","ksana2015-webruntime":"/Users/yu/ksana2015/node_modules/ksana2015-webruntime/index.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/searcharea.jsx":[function(require,module,exports){
+},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","./store_text":"/Users/yu/ksana2015/reAdarsha/src/store_text.js","./store_toc":"/Users/yu/ksana2015/reAdarsha/src/store_toc.js","./tabarea.jsx":"/Users/yu/ksana2015/reAdarsha/src/tabarea.jsx","./textarea.jsx":"/Users/yu/ksana2015/reAdarsha/src/textarea.jsx","ksana2015-webruntime":"/Users/yu/ksana2015/node_modules/ksana2015-webruntime/index.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/searcharea.jsx":[function(require,module,exports){
 var React=require("react");
 var actions=require("./actions");
 var Searcharea=React.createClass({displayName: "Searcharea",
@@ -6724,13 +6744,37 @@ render:function() {
 });
 
 module.exports=Showtext;
-},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/store.js":[function(require,module,exports){
+},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/store_text.js":[function(require,module,exports){
+var Reflux=require("reflux");
+var React=require("react");
+var actions=require("./actions");
+var kde=require("ksana-database");  // Ksana Database Engine
+var kse=require("ksana-search"); // Ksana Search Engine (run at client side)
+
+var store=Reflux.createStore({
+	listenables:actions //讓action.js內的add自動綁定這裡的onAdd, clear自動綁定onClear
+	,onShowPage:function(f,p,tofind){
+		// window.location.hash = this.encodeHashTag(f,p);
+		kde.open("jiangkangyur",function(a,db){
+			kse.highlightFile(db,f,{q:tofind,token:true},function(data){//kde
+		      //that.setState({bodytext:data,page:p});
+		      //this.trigger(data);
+		      console.log(data);
+		    });
+		},this);
+
+	}
+
+});
+
+module.exports=store;
+},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","ksana-database":"/Users/yu/ksana2015/node_modules/ksana-database/index.js","ksana-search":"/Users/yu/ksana2015/node_modules/ksana-search/index.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/store_toc.js":[function(require,module,exports){
 var Reflux=require("reflux");
 var React=require("react");
 var actions=require("./actions");
 var kde=require("ksana-database");  // Ksana Database Engine
 
-var store=Reflux.createStore({
+var store_toc=Reflux.createStore({
 	listenables:actions //讓action.js內的add自動綁定這裡的onAdd, clear自動綁定onClear
 	,db:[]
 	,genToc:function(texts,depths,voffs){
@@ -6744,6 +6788,7 @@ var store=Reflux.createStore({
 	,onReady:function(usage,quota) {
 		var that=this;
 		if (this.db.length == 0) kde.open("jiangkangyur",function(a,db){
+			this.db=db;
 			that.trigger(db);  
 		    db.get([["fields","head"],["fields","head_depth"],["fields","head_voff"]],function(){
 		      var heads=db.get(["fields","head"]);
@@ -6753,19 +6798,17 @@ var store=Reflux.createStore({
 		      this.toc=toc;		 
 		    }); //載入目錄
 		},this);    
-		
-		//this.trigger(this.db); 
-		//this.setState({dialog:false,quota:quota,usage:usage});
 	}
 
 });
 
-module.exports=store;
+module.exports=store_toc;
 },{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","ksana-database":"/Users/yu/ksana2015/node_modules/ksana-database/index.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/tabarea.jsx":[function(require,module,exports){
 var React=require("react");
 var actions=require("./actions");
 var Stacktoc=require("ksana2015-stacktoc").component;  //載入目錄顯示元件
 var Searcharea=require("./searcharea.jsx");
+var Catalogarea=require("./catalogarea.jsx")
 var Tabarea=React.createClass({displayName: "Tabarea",
   	clearDone:function() {
 		actions.clearDone();
@@ -6783,10 +6826,7 @@ var Tabarea=React.createClass({displayName: "Tabarea",
 
           React.createElement("div", {className: "tab-content", ref: "tab-content"}, 
             React.createElement("div", {className: "tab-pane fade in active", id: "Catalog"}, 
-              React.createElement(Stacktoc, {className: "stacktoc", textConverter: this.textConverter, showText: this.props.showText, showExcerpt: this.showExcerpt, 
-              opts: {tocbar:"banner/bar.png",tocbar_start:"banner/bar_start.png",stopAt:"་",
-              maxitemlength:42,tocstyle:"vertical_line"}, 
-              data: this.props.toc})
+            	React.createElement(Catalogarea, null)
             ), 
             React.createElement("div", {className: "tab-pane fade", id: "Search"}, 
               React.createElement(Searcharea, null)
@@ -6797,14 +6837,20 @@ var Tabarea=React.createClass({displayName: "Tabarea",
 });
 
 module.exports=Tabarea;
-},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","./searcharea.jsx":"/Users/yu/ksana2015/reAdarsha/src/searcharea.jsx","ksana2015-stacktoc":"/Users/yu/ksana2015/node_modules/ksana2015-stacktoc/index.js","react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/textarea.jsx":[function(require,module,exports){
+},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","./catalogarea.jsx":"/Users/yu/ksana2015/reAdarsha/src/catalogarea.jsx","./searcharea.jsx":"/Users/yu/ksana2015/reAdarsha/src/searcharea.jsx","ksana2015-stacktoc":"/Users/yu/ksana2015/node_modules/ksana2015-stacktoc/index.js","react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/textarea.jsx":[function(require,module,exports){
 var React=require("react");
+var Reflux=require("reflux");
 var actions=require("./actions");
+var store_text=require("./store_text");
 var Textcontrollbar=require("./textcontrollbar.jsx");
 var Showtext=require("./showtext.jsx");
 
 var Textarea=React.createClass({displayName: "Textarea",
-render:function() {
+	mixins:[Reflux.listenTo(store_text,"onStore")],
+	onStore: function(data){
+		console.log(data);
+    },
+	render:function() {
 		return React.createElement("div", null, 
       		React.createElement(Textcontrollbar, null), 
       		React.createElement(Showtext, null)
@@ -6813,7 +6859,7 @@ render:function() {
 });
 
 module.exports=Textarea;
-},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","./showtext.jsx":"/Users/yu/ksana2015/reAdarsha/src/showtext.jsx","./textcontrollbar.jsx":"/Users/yu/ksana2015/reAdarsha/src/textcontrollbar.jsx","react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/textcontrollbar.jsx":[function(require,module,exports){
+},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","./showtext.jsx":"/Users/yu/ksana2015/reAdarsha/src/showtext.jsx","./store_text":"/Users/yu/ksana2015/reAdarsha/src/store_text.js","./textcontrollbar.jsx":"/Users/yu/ksana2015/reAdarsha/src/textcontrollbar.jsx","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/textcontrollbar.jsx":[function(require,module,exports){
 var React=require("react");
 var actions=require("./actions");
 var Textcontrollbar=React.createClass({displayName: "Textcontrollbar",

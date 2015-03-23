@@ -3,7 +3,7 @@ var React=require("react");
 var actions=require("./actions");
 var kde=require("ksana-database");  // Ksana Database Engine
 
-var store=Reflux.createStore({
+var store_toc=Reflux.createStore({
 	listenables:actions //讓action.js內的add自動綁定這裡的onAdd, clear自動綁定onClear
 	,db:[]
 	,genToc:function(texts,depths,voffs){
@@ -31,4 +31,4 @@ var store=Reflux.createStore({
 
 });
 
-module.exports=store;
+module.exports=store_toc;
