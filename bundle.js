@@ -6696,6 +6696,33 @@ var Maincomponent = React.createClass({displayName: "Maincomponent",
   	if(data.length) this.setState({toc:data});
     else this.setState({db:data});
   },
+  componentWillUnmount:function() {
+    window.removeEventListener('resize', this.handleResize);
+  },
+  componentDidMount:function() {
+    var that=this;
+    setTimeout(function(){
+      that.hideBanner();
+    },5000);
+    //window.onhashchange = function () {that.goHashTag();} 
+    window.addEventListener('resize', this.handleResize);
+  }, 
+  hideBanner:function() {
+    var header=$("div.header");
+    var that=this;
+    header.animate({height: "0px"}, 2000, function() {
+      header.hide();
+      that.bannerHeight=0;
+      that.setBannerHeight(0);
+    });
+  },
+  handleResize:function() {
+    clearTimeout(this.resizetimer);
+    var that=this;
+    this.resizetimer=setTimeout(function(){
+      that.setBannerHeight(that.bannerHeight);
+    },300);
+  },
   openFileinstaller:function(autoclose) {
     if (window.location.origin.indexOf("http://127.0.0.1")==0) {
       require_kdb[0].url=window.location.origin+window.location.pathname+"jiangkangyur.kdb";
@@ -6705,6 +6732,9 @@ var Maincomponent = React.createClass({displayName: "Maincomponent",
   },
   render: function() {
     return React.createElement("div", {className: "row"}, 
+      React.createElement("div", {className: "header"}, 
+        React.createElement("img", {width: "100%", src: "./banner/banner.png"})
+      ), 
       this.state.fi, 
       React.createElement("div", {className: "col-md-4"}, 
       	React.createElement(Tabarea, {db: this.state.db, toc: this.state.toc})
@@ -6933,7 +6963,7 @@ var Textcontrollbar=React.createClass({displayName: "Textcontrollbar",
             React.createElement("button", {className: "btn btn-default", title: "Previous File", onClick: this.goPrevFile}, React.createElement("img", {width: "20", src: "./banner/prev.png"})), 
             React.createElement("button", {className: "btn btn-default", title: "Next File", onClick: this.goNextFile}, React.createElement("img", {width: "20", src: "./banner/next.png"})), 
 
-            React.createElement("button", {className: "btn btn-default right", title: "Contact Us"}, React.createElement("a", {href: "http://www.dharma-treasure.org/en/contact-us/", target: "_new"}, React.createElement("img", {width: "20", src: "./banner/icon-info.png"}))), 
+            React.createElement("a", {href: "http://www.dharma-treasure.org/en/contact-us/", target: "_new"}, React.createElement("button", {className: "btn btn-default right", title: "Contact Us"}, React.createElement("img", {width: "20", src: "./banner/icon-info.png"}))), 
             React.createElement("button", {className: "btn btn-default right", title: "Toggle Wylie Transliteration", onClick: this.props.setwylie}, React.createElement("img", {width: "20", src: "./banner/icon-towylie.png"})), 
 
             React.createElement("button", {className: "btn btn-default right", title: "Increase Font Size", onClick: this.increasefontsize}, React.createElement("img", {width: "20", src: "./banner/increasefontsize.png"})), 

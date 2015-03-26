@@ -19,7 +19,7 @@ var Textcontrollbar=React.createClass({
             <button className="btn btn-default" title="Previous File" onClick={this.goPrevFile}><img width="20" src="./banner/prev.png"/></button>
             <button className="btn btn-default" title="Next File" onClick={this.goNextFile}><img width="20" src="./banner/next.png"/></button>
 
-            <button className="btn btn-default right" title="Contact Us"><a href="http://www.dharma-treasure.org/en/contact-us/" target="_new"><img width="20" src="./banner/icon-info.png"/></a></button>
+            <a href="http://www.dharma-treasure.org/en/contact-us/" target="_new"><button className="btn btn-default right" title="Contact Us"><img width="20" src="./banner/icon-info.png"/></button></a>
             <button className="btn btn-default right" title="Toggle Wylie Transliteration" onClick={this.props.setwylie}><img width="20" src="./banner/icon-towylie.png"/></button>
 
             <button className="btn btn-default right" title="Increase Font Size" onClick={this.increasefontsize}><img width="20" src="./banner/increasefontsize.png"/></button>
