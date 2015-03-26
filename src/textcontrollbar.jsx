@@ -1,5 +1,5 @@
 var React=require("react");
-var actions=require("./actions");
+//var actions=require("./actions");
 var Textcontrollbar=React.createClass({
 	renderSideMenuButton: function(){
 		return "hide menu btn";

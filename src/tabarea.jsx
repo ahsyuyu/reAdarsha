@@ -1,15 +1,11 @@
 var React=require("react");
-var actions=require("./actions");
 var Stacktoc=require("ksana2015-stacktoc").component;  //載入目錄顯示元件
 var Searcharea=require("./searcharea.jsx");
 var Catalogarea=require("./catalogarea.jsx")
 var Tabarea=React.createClass({
-  	clearDone:function() {
-		actions.clearDone();
-	}
-	,textConverter:function(t) {
-	if(this.props.wylie == true) return tibetan.toWylie(t,null,false); 
-	return t; 
+	textConverter:function(t) {
+		if(this.props.wylie == true) return tibetan.toWylie(t,null,false); 
+		return t; 
 	}
 	,render:function() {
 		return <div>
@@ -20,10 +16,10 @@ var Tabarea=React.createClass({
 
           <div className="tab-content" ref="tab-content">
             <div className="tab-pane fade in active" id="Catalog">               
-            	<Catalogarea />
+            	<Catalogarea db={this.props.db} toc={this.props.toc}/>
             </div> 
             <div className="tab-pane fade" id="Search">
-              <Searcharea />
+                <Searcharea />
             </div> 
           </div> 
       	</div>;

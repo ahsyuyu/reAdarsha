@@ -6631,53 +6631,48 @@ runtime.boot("reAdarsha",function(){
 	var Main=React.createElement(require("./src/main.jsx"));
 	ksana.mainComponent=React.render(Main,document.getElementById("main"));
 });
-},{"./src/main.jsx":"/Users/yu/ksana2015/reAdarsha/src/main.jsx","ksana2015-webruntime":"/Users/yu/ksana2015/node_modules/ksana2015-webruntime/index.js","react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/actions.js":[function(require,module,exports){
+},{"./src/main.jsx":"/Users/yu/ksana2015/reAdarsha/src/main.jsx","ksana2015-webruntime":"/Users/yu/ksana2015/node_modules/ksana2015-webruntime/index.js","react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/actions_text.js":[function(require,module,exports){
 var Reflux=require("reflux");
-var actions=Reflux.createActions([
-	"ready"
-	,"showPage"
+var action_text=Reflux.createActions([
+	"showPage"
 ]);
-module.exports=actions;
+module.exports=action_text;
+},{"reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/actions_toc.js":[function(require,module,exports){
+var Reflux=require("reflux");
+var actions_toc=Reflux.createActions([
+	"ready"
+]);
+module.exports=actions_toc;
 },{"reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/catalogarea.jsx":[function(require,module,exports){
 var React=require("react");
 var Reflux=require("reflux");
-var actions=require("./actions");
+var actions_text=require("./actions_text");
 var Stacktoc=require("ksana2015-stacktoc").component;  //載入目錄顯示元件
-var store_toc=require("./store_toc");
+var store_text=require("./store_text");
 var Searcharea=require("./searcharea.jsx");
 
 var Catalogarea=React.createClass({displayName: "Catalogarea",
-  mixins:[Reflux.listenTo(store_toc,"onStore")],
-  getInitialState: function() {
-    return {toc:""};
-  },
-  onStore: function(data){
-    if(data.length) this.setState({toc:data});
-    else this.setState({db:data});
-  },
   showText:function(n) {
-    var res=this.state.db.fileSegFromVpos(this.state.toc[n].voff);
-    if(res.file != -1) actions.showPage(res.file,res.seg); //this.showPage(res.file,res.seg);
-    this.setState({dataN:n});    
-    //console.log(api_text.showText(n,this.state.toc));
+    var res=this.props.db.fileSegFromVpos(this.props.toc[n].voff);
+    if(res.file != -1) actions_text.showPage(res.file,res.seg); //this.showPage(res.file,res.seg);
+    //this.setState({dataN:n});    
+    console.log(res);
   },
 	render:function() {
 		return React.createElement("div", null, 
           React.createElement(Stacktoc, {className: "stacktoc", textConverter: this.textConverter, showText: this.showText, showExcerpt: this.showExcerpt, 
           opts: {tocbar:"banner/bar.png",tocbar_start:"banner/bar_start.png",stopAt:"་",
           maxitemlength:42,tocstyle:"vertical_line"}, 
-          data: this.state.toc})
+          data: this.props.toc})
       	);
 	}
 });
 
 module.exports=Catalogarea;
-
-
-},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","./searcharea.jsx":"/Users/yu/ksana2015/reAdarsha/src/searcharea.jsx","./store_toc":"/Users/yu/ksana2015/reAdarsha/src/store_toc.js","ksana2015-stacktoc":"/Users/yu/ksana2015/node_modules/ksana2015-stacktoc/index.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/main.jsx":[function(require,module,exports){
+},{"./actions_text":"/Users/yu/ksana2015/reAdarsha/src/actions_text.js","./searcharea.jsx":"/Users/yu/ksana2015/reAdarsha/src/searcharea.jsx","./store_text":"/Users/yu/ksana2015/reAdarsha/src/store_text.js","ksana2015-stacktoc":"/Users/yu/ksana2015/node_modules/ksana2015-stacktoc/index.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/main.jsx":[function(require,module,exports){
 var React=require("react");
 var Reflux=require("reflux");
-var actions=require("./actions");
+var actions_toc=require("./actions_toc");
 var store_toc=require("./store_toc");
 var store_text=require("./store_text");
 //var api_text=require("./api_text");
@@ -6690,12 +6685,12 @@ var Tabarea=require("./tabarea.jsx");
 var Textarea=require("./textarea.jsx");
 
 var Maincomponent = React.createClass({displayName: "Maincomponent",
-  mixins:[Reflux.listenTo(store_toc,"onStore")],
+  mixins:[Reflux.listenTo(store_toc,"onStoreToc")],
   getInitialState: function() {
   	fi=this.openFileinstaller(false);
   	return {fi:fi};
   },
-  onStore: function(data){
+  onStoreToc: function(data){
   	if(data.length) this.setState({toc:data});
     else this.setState({db:data});
   },
@@ -6704,13 +6699,13 @@ var Maincomponent = React.createClass({displayName: "Maincomponent",
       require_kdb[0].url=window.location.origin+window.location.pathname+"jiangkangyur.kdb";
     }
     return React.createElement(Fileinstaller, {quota: "512M", autoclose: autoclose, needed: require_kdb, 
-                     onReady: actions.ready()})
+                     onReady: actions_toc.ready()})
   },
   render: function() {
     return React.createElement("div", {className: "row"}, 
       this.state.fi, 
       React.createElement("div", {className: "col-md-4"}, 
-      	React.createElement(Tabarea, null)
+      	React.createElement(Tabarea, {db: this.state.db, toc: this.state.toc})
       ), 
       React.createElement("div", {className: "col-md-8"}, 
       	React.createElement(Textarea, null)
@@ -6719,9 +6714,9 @@ var Maincomponent = React.createClass({displayName: "Maincomponent",
   }
 });
 module.exports=Maincomponent;
-},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","./store_text":"/Users/yu/ksana2015/reAdarsha/src/store_text.js","./store_toc":"/Users/yu/ksana2015/reAdarsha/src/store_toc.js","./tabarea.jsx":"/Users/yu/ksana2015/reAdarsha/src/tabarea.jsx","./textarea.jsx":"/Users/yu/ksana2015/reAdarsha/src/textarea.jsx","ksana2015-webruntime":"/Users/yu/ksana2015/node_modules/ksana2015-webruntime/index.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/searcharea.jsx":[function(require,module,exports){
+},{"./actions_toc":"/Users/yu/ksana2015/reAdarsha/src/actions_toc.js","./store_text":"/Users/yu/ksana2015/reAdarsha/src/store_text.js","./store_toc":"/Users/yu/ksana2015/reAdarsha/src/store_toc.js","./tabarea.jsx":"/Users/yu/ksana2015/reAdarsha/src/tabarea.jsx","./textarea.jsx":"/Users/yu/ksana2015/reAdarsha/src/textarea.jsx","ksana2015-webruntime":"/Users/yu/ksana2015/node_modules/ksana2015-webruntime/index.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/searcharea.jsx":[function(require,module,exports){
 var React=require("react");
-var actions=require("./actions");
+
 var Searcharea=React.createClass({displayName: "Searcharea",
 render:function() {
 		return React.createElement("div", null, 
@@ -6731,35 +6726,84 @@ render:function() {
 });
 
 module.exports=Searcharea;
-},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/showtext.jsx":[function(require,module,exports){
+},{"react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/showseg.jsx":[function(require,module,exports){
 var React=require("react");
-var actions=require("./actions");
+var Reflux=require("reflux");
+
+var Showseg=React.createClass({displayName: "Showseg",
+	render:function() {
+		return React.createElement("div", null, 
+			this.props.segs.pb, React.createElement("br", null), 
+			React.createElement("div", {dangerouslySetInnerHTML: {__html:this.props.segs.text}})
+      	)
+	}
+});
+
+module.exports=Showseg;
+},{"react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/showtext.jsx":[function(require,module,exports){
+var React=require("react");
+var Reflux=require("reflux");
+var store_text=require("./store_text");
+var Showseg=require("./showseg.jsx");
 var Showtext=React.createClass({displayName: "Showtext",
-render:function() {
+	mixins:[Reflux.listenTo(store_text,"onStoreText")],
+	getInitialState: function() {
+		return {text:""}
+	},
+	onStoreText: function(data){
+		this.setState({text:data});
+    },
+	getSegsFromFile: function(file) {
+		var segs=[], pb=[], text=[];
+		var that=this;
+		var out="",lastidx=0,nextpagekeepcrlf=false;
+
+		file.replace(/<pb n="(.*?)"><\/pb>/g,function(m,m1,idx){
+		  var pagetext=file.substring(lastidx+m.length,idx);
+		  pb.push(m1);
+		  text.push(pagetext);
+		  lastidx=idx;
+		});
+		var t1=file.substr(file.lastIndexOf("<pb"));
+		var t=t1.replace(/<pb n="(.*?)"><\/pb>/,"");
+		text.push(t);
+		pb.map(function(item,i){
+		  segs.push({pb:item,text:text[i+1]});
+		});
+		//console.log("pb:",pb.length,"text:",text.length);
+		return segs;
+	},
+	render:function() {
+		var s=this.getSegsFromFile(this.state.text);
+	    var segs=[];
+	    s.map(function(item){
+	      segs.push(React.createElement(Showseg, {segs: item}));
+	    });
+		//<div dangerouslySetInnerHTML={{__html:this.state.bodytext.text}}></div>
 		return React.createElement("div", {className: "showtext"}, 
-      		
-      		"rendering Showtext"
+      		segs
       	)
 	}
 });
 
 module.exports=Showtext;
-},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/store_text.js":[function(require,module,exports){
+},{"./showseg.jsx":"/Users/yu/ksana2015/reAdarsha/src/showseg.jsx","./store_text":"/Users/yu/ksana2015/reAdarsha/src/store_text.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/store_text.js":[function(require,module,exports){
 var Reflux=require("reflux");
 var React=require("react");
-var actions=require("./actions");
+var actions_text=require("./actions_text");
 var kde=require("ksana-database");  // Ksana Database Engine
 var kse=require("ksana-search"); // Ksana Search Engine (run at client side)
 
-var store=Reflux.createStore({
-	listenables:actions //讓action.js內的add自動綁定這裡的onAdd, clear自動綁定onClear
+var store_text=Reflux.createStore({
+	listenables:actions_text //讓action.js內的add自動綁定這裡的onAdd, clear自動綁定onClear
 	,onShowPage:function(f,p,tofind){
 		// window.location.hash = this.encodeHashTag(f,p);
+		var that=this;
 		kde.open("jiangkangyur",function(a,db){
 			kse.highlightFile(db,f,{q:tofind,token:true},function(data){//kde
 		      //that.setState({bodytext:data,page:p});
-		      //this.trigger(data);
-		      console.log(data);
+		      that.trigger(data.text);
+		      //console.log(data);
 		    });
 		},this);
 
@@ -6767,15 +6811,15 @@ var store=Reflux.createStore({
 
 });
 
-module.exports=store;
-},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","ksana-database":"/Users/yu/ksana2015/node_modules/ksana-database/index.js","ksana-search":"/Users/yu/ksana2015/node_modules/ksana-search/index.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/store_toc.js":[function(require,module,exports){
+module.exports=store_text;
+},{"./actions_text":"/Users/yu/ksana2015/reAdarsha/src/actions_text.js","ksana-database":"/Users/yu/ksana2015/node_modules/ksana-database/index.js","ksana-search":"/Users/yu/ksana2015/node_modules/ksana-search/index.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/store_toc.js":[function(require,module,exports){
 var Reflux=require("reflux");
 var React=require("react");
-var actions=require("./actions");
+var actions_toc=require("./actions_toc");
 var kde=require("ksana-database");  // Ksana Database Engine
 
 var store_toc=Reflux.createStore({
-	listenables:actions //讓action.js內的add自動綁定這裡的onAdd, clear自動綁定onClear
+	listenables:actions_toc //讓action.js內的add自動綁定這裡的onAdd, clear自動綁定onClear
 	,db:[]
 	,genToc:function(texts,depths,voffs){
 		var toc=[{depth:0,text:"འཇང་བཀའ་འགྱུར།"}];
@@ -6789,13 +6833,12 @@ var store_toc=Reflux.createStore({
 		var that=this;
 		if (this.db.length == 0) kde.open("jiangkangyur",function(a,db){
 			this.db=db;
-			that.trigger(db);  
+			this.trigger(db);  
 		    db.get([["fields","head"],["fields","head_depth"],["fields","head_voff"]],function(){
 		      var heads=db.get(["fields","head"]);
 		      var depths=db.get(["fields","head_depth"]);
 		      var voffs=db.get(["fields","head_voff"]);
-		      var toc=this.genToc(heads,depths,voffs);
-		      this.toc=toc;		 
+		      var toc=this.genToc(heads,depths,voffs);		 
 		    }); //載入目錄
 		},this);    
 	}
@@ -6803,19 +6846,15 @@ var store_toc=Reflux.createStore({
 });
 
 module.exports=store_toc;
-},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","ksana-database":"/Users/yu/ksana2015/node_modules/ksana-database/index.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/tabarea.jsx":[function(require,module,exports){
+},{"./actions_toc":"/Users/yu/ksana2015/reAdarsha/src/actions_toc.js","ksana-database":"/Users/yu/ksana2015/node_modules/ksana-database/index.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/tabarea.jsx":[function(require,module,exports){
 var React=require("react");
-var actions=require("./actions");
 var Stacktoc=require("ksana2015-stacktoc").component;  //載入目錄顯示元件
 var Searcharea=require("./searcharea.jsx");
 var Catalogarea=require("./catalogarea.jsx")
 var Tabarea=React.createClass({displayName: "Tabarea",
-  	clearDone:function() {
-		actions.clearDone();
-	}
-	,textConverter:function(t) {
-	if(this.props.wylie == true) return tibetan.toWylie(t,null,false); 
-	return t; 
+	textConverter:function(t) {
+		if(this.props.wylie == true) return tibetan.toWylie(t,null,false); 
+		return t; 
 	}
 	,render:function() {
 		return React.createElement("div", null, 
@@ -6826,10 +6865,10 @@ var Tabarea=React.createClass({displayName: "Tabarea",
 
           React.createElement("div", {className: "tab-content", ref: "tab-content"}, 
             React.createElement("div", {className: "tab-pane fade in active", id: "Catalog"}, 
-            	React.createElement(Catalogarea, null)
+            	React.createElement(Catalogarea, {db: this.props.db, toc: this.props.toc})
             ), 
             React.createElement("div", {className: "tab-pane fade", id: "Search"}, 
-              React.createElement(Searcharea, null)
+                React.createElement(Searcharea, null)
             )
           )
       	);
@@ -6837,19 +6876,17 @@ var Tabarea=React.createClass({displayName: "Tabarea",
 });
 
 module.exports=Tabarea;
-},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","./catalogarea.jsx":"/Users/yu/ksana2015/reAdarsha/src/catalogarea.jsx","./searcharea.jsx":"/Users/yu/ksana2015/reAdarsha/src/searcharea.jsx","ksana2015-stacktoc":"/Users/yu/ksana2015/node_modules/ksana2015-stacktoc/index.js","react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/textarea.jsx":[function(require,module,exports){
+},{"./catalogarea.jsx":"/Users/yu/ksana2015/reAdarsha/src/catalogarea.jsx","./searcharea.jsx":"/Users/yu/ksana2015/reAdarsha/src/searcharea.jsx","ksana2015-stacktoc":"/Users/yu/ksana2015/node_modules/ksana2015-stacktoc/index.js","react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/textarea.jsx":[function(require,module,exports){
 var React=require("react");
 var Reflux=require("reflux");
-var actions=require("./actions");
+var actions_text=require("./actions_text");
+var store_toc=require("./store_toc");
 var store_text=require("./store_text");
 var Textcontrollbar=require("./textcontrollbar.jsx");
 var Showtext=require("./showtext.jsx");
 
 var Textarea=React.createClass({displayName: "Textarea",
-	mixins:[Reflux.listenTo(store_text,"onStore")],
-	onStore: function(data){
-		console.log(data);
-    },
+
 	render:function() {
 		return React.createElement("div", null, 
       		React.createElement(Textcontrollbar, null), 
@@ -6859,9 +6896,9 @@ var Textarea=React.createClass({displayName: "Textarea",
 });
 
 module.exports=Textarea;
-},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","./showtext.jsx":"/Users/yu/ksana2015/reAdarsha/src/showtext.jsx","./store_text":"/Users/yu/ksana2015/reAdarsha/src/store_text.js","./textcontrollbar.jsx":"/Users/yu/ksana2015/reAdarsha/src/textcontrollbar.jsx","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/textcontrollbar.jsx":[function(require,module,exports){
+},{"./actions_text":"/Users/yu/ksana2015/reAdarsha/src/actions_text.js","./showtext.jsx":"/Users/yu/ksana2015/reAdarsha/src/showtext.jsx","./store_text":"/Users/yu/ksana2015/reAdarsha/src/store_text.js","./store_toc":"/Users/yu/ksana2015/reAdarsha/src/store_toc.js","./textcontrollbar.jsx":"/Users/yu/ksana2015/reAdarsha/src/textcontrollbar.jsx","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/textcontrollbar.jsx":[function(require,module,exports){
 var React=require("react");
-var actions=require("./actions");
+//var actions=require("./actions");
 var Textcontrollbar=React.createClass({displayName: "Textcontrollbar",
 	renderSideMenuButton: function(){
 		return "hide menu btn";
@@ -6887,7 +6924,7 @@ var Textcontrollbar=React.createClass({displayName: "Textcontrollbar",
 });
 
 module.exports=Textcontrollbar;
-},{"./actions":"/Users/yu/ksana2015/reAdarsha/src/actions.js","react":"react"}]},{},["/Users/yu/ksana2015/reAdarsha/index.js"])
+},{"react":"react"}]},{},["/Users/yu/ksana2015/reAdarsha/index.js"])
 
 
 //# sourceMappingURL=bundle.js.map

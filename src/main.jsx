@@ -1,6 +1,6 @@
 var React=require("react");
 var Reflux=require("reflux");
-var actions=require("./actions");
+var actions_toc=require("./actions_toc");
 var store_toc=require("./store_toc");
 var store_text=require("./store_text");
 //var api_text=require("./api_text");
@@ -13,12 +13,12 @@ var Tabarea=require("./tabarea.jsx");
 var Textarea=require("./textarea.jsx");
 
 var Maincomponent = React.createClass({
-  mixins:[Reflux.listenTo(store_toc,"onStore")],
+  mixins:[Reflux.listenTo(store_toc,"onStoreToc")],
   getInitialState: function() {
   	fi=this.openFileinstaller(false);
   	return {fi:fi};
   },
-  onStore: function(data){
+  onStoreToc: function(data){
   	if(data.length) this.setState({toc:data});
     else this.setState({db:data});
   },
@@ -27,13 +27,13 @@ var Maincomponent = React.createClass({
       require_kdb[0].url=window.location.origin+window.location.pathname+"jiangkangyur.kdb";
     }
     return <Fileinstaller quota="512M" autoclose={autoclose} needed={require_kdb} 
-                     onReady={actions.ready()}/>
+                     onReady={actions_toc.ready()}/>
   },
   render: function() {
     return <div className="row">
       {this.state.fi}
       <div className="col-md-4">
-      	<Tabarea />
+      	<Tabarea db={this.state.db} toc={this.state.toc}/>
       </div>
       <div className="col-md-8">
       	<Textarea />
