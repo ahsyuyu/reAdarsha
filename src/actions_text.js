@@ -1,5 +1,7 @@
 var Reflux=require("reflux");
 var action_text=Reflux.createActions([
-	"showPage"
+	"showPage",
+	"prevFile",
+	"nextFile"
 ]);
 module.exports=action_text;

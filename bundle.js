@@ -6634,7 +6634,9 @@ runtime.boot("reAdarsha",function(){
 },{"./src/main.jsx":"/Users/yu/ksana2015/reAdarsha/src/main.jsx","ksana2015-webruntime":"/Users/yu/ksana2015/node_modules/ksana2015-webruntime/index.js","react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/actions_text.js":[function(require,module,exports){
 var Reflux=require("reflux");
 var action_text=Reflux.createActions([
-	"showPage"
+	"showPage",
+	"prevFile",
+	"nextFile"
 ]);
 module.exports=action_text;
 },{"reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/actions_toc.js":[function(require,module,exports){
@@ -6795,18 +6797,31 @@ var kde=require("ksana-database");  // Ksana Database Engine
 var kse=require("ksana-search"); // Ksana Search Engine (run at client side)
 
 var store_text=Reflux.createStore({
-	listenables:actions_text //讓action.js內的add自動綁定這裡的onAdd, clear自動綁定onClear
-	,onShowPage:function(f,p,tofind){
+	listenables:actions_text, //讓action.js內的add自動綁定這裡的onAdd, clear自動綁定onClear
+	file:0,
+	page:0,
+	onShowPage:function(f,p,tofind){
 		// window.location.hash = this.encodeHashTag(f,p);
 		var that=this;
 		kde.open("jiangkangyur",function(a,db){
-			kse.highlightFile(db,f,{q:tofind,token:true},function(data){//kde
+			kse.highlightFile(db,f,{q:tofind,token:true},function(data){
 		      //that.setState({bodytext:data,page:p});
 		      that.trigger(data.text);
-		      //console.log(data);
+		      that.file=f;
+		      that.page=p;
 		    });
 		},this);
-
+	},
+	onPrevFile: function(){
+		var file=this.file-1;
+		var page=this.page || 1;
+		if(file<0) file=0;
+		this.onShowPage(file,page);
+	},
+	onNextFile: function() {
+		var file=this.file+1;
+		var page=this.page || 1;
+		this.onShowPage(file,page);	
 	}
 
 });
@@ -6898,7 +6913,7 @@ var Textarea=React.createClass({displayName: "Textarea",
 module.exports=Textarea;
 },{"./actions_text":"/Users/yu/ksana2015/reAdarsha/src/actions_text.js","./showtext.jsx":"/Users/yu/ksana2015/reAdarsha/src/showtext.jsx","./store_text":"/Users/yu/ksana2015/reAdarsha/src/store_text.js","./store_toc":"/Users/yu/ksana2015/reAdarsha/src/store_toc.js","./textcontrollbar.jsx":"/Users/yu/ksana2015/reAdarsha/src/textcontrollbar.jsx","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/textcontrollbar.jsx":[function(require,module,exports){
 var React=require("react");
-//var actions=require("./actions");
+var actions_text=require("./actions_text");
 var Textcontrollbar=React.createClass({displayName: "Textcontrollbar",
 	renderSideMenuButton: function(){
 		return "hide menu btn";
@@ -6906,11 +6921,17 @@ var Textcontrollbar=React.createClass({displayName: "Textcontrollbar",
 	getAddress: function(){
 
 	},
+      goPrevFile: function() {
+            actions_text.prevFile();
+      },
+      goNextFile: function() {
+            actions_text.nextFile();
+      },
 	render:function() {
 		return React.createElement("div", {className: "controlbar"}, 
       		this.renderSideMenuButton(), 
-            React.createElement("button", {className: "btn btn-default", title: "Previous File", onClick: this.props.prev}, React.createElement("img", {width: "20", src: "./banner/prev.png"})), 
-            React.createElement("button", {className: "btn btn-default", title: "Next File", onClick: this.props.next}, React.createElement("img", {width: "20", src: "./banner/next.png"})), 
+            React.createElement("button", {className: "btn btn-default", title: "Previous File", onClick: this.goPrevFile}, React.createElement("img", {width: "20", src: "./banner/prev.png"})), 
+            React.createElement("button", {className: "btn btn-default", title: "Next File", onClick: this.goNextFile}, React.createElement("img", {width: "20", src: "./banner/next.png"})), 
 
             React.createElement("button", {className: "btn btn-default right", title: "Contact Us"}, React.createElement("a", {href: "http://www.dharma-treasure.org/en/contact-us/", target: "_new"}, React.createElement("img", {width: "20", src: "./banner/icon-info.png"}))), 
             React.createElement("button", {className: "btn btn-default right", title: "Toggle Wylie Transliteration", onClick: this.props.setwylie}, React.createElement("img", {width: "20", src: "./banner/icon-towylie.png"})), 
@@ -6924,7 +6945,7 @@ var Textcontrollbar=React.createClass({displayName: "Textcontrollbar",
 });
 
 module.exports=Textcontrollbar;
-},{"react":"react"}]},{},["/Users/yu/ksana2015/reAdarsha/index.js"])
+},{"./actions_text":"/Users/yu/ksana2015/reAdarsha/src/actions_text.js","react":"react"}]},{},["/Users/yu/ksana2015/reAdarsha/index.js"])
 
 
 //# sourceMappingURL=bundle.js.map
