@@ -27,3 +27,7 @@ div.current span.text:hover{text-decoration:underline;cursor:pointer;}
 div.current {color:black; background:white ;border-bottom-right-radius:10px 10px;}
 div.current:hover {background:#D8F6CE;}
 /*stacktoc*/
+
+.showtext a {color: #178918; cursor: pointer;}
+
+.pbImg.opened {background-color: black; width: 50px; height: 50px;}

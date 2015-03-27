@@ -1,17 +1,20 @@
 var kse=require("ksana-search"); // Ksana Search Engine (run at client side)
 var kde=require("ksana-database");  // Ksana Database Engine
 var DATABASE;
-kde.open("jiangkangyur",function(a,db){
-	DATABASE = db;
-},this);    
+// kde.open("jiangkangyur",function(a,db){
+// 	DATABASE = db;
+// },this);    
+var getImgName = function(volpage) {
+    var p=volpage.split(".");
+    var v="000"+p[0];
+    var vol=v.substr(v.length-3,v.length);
+    var pa="000"+p[1].substr(0,p[1].length-1);
+    var page=pa.substr(pa.length-3,pa.length);
+    var side=p[1].substr(p[1].length-1);
 
-var showText=function(input,toc){
-	var res=DATABASE.fileSegFromVpos(toc[input].voff);
-	return res;
+    return vol+"/"+vol+"-"+page+side;
 }
 
-// var showPage=function(){
-	
-// }
 
-module.exports={showText:showText};
+
+module.exports={getImgName:getImgName};

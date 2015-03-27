@@ -10,7 +10,7 @@ var Catalogarea=React.createClass({
     var res=this.props.db.fileSegFromVpos(this.props.toc[n].voff);
     if(res.file != -1) actions_text.showPage(res.file,res.seg); //this.showPage(res.file,res.seg);
     //this.setState({dataN:n});    
-    console.log(res);
+    //console.log(res);
   },
 	render:function() {
 		return <div>

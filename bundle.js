@@ -6645,7 +6645,28 @@ var actions_toc=Reflux.createActions([
 	"ready"
 ]);
 module.exports=actions_toc;
-},{"reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/catalogarea.jsx":[function(require,module,exports){
+},{"reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/api_text.js":[function(require,module,exports){
+var kse=require("ksana-search"); // Ksana Search Engine (run at client side)
+var kde=require("ksana-database");  // Ksana Database Engine
+var DATABASE;
+// kde.open("jiangkangyur",function(a,db){
+// 	DATABASE = db;
+// },this);    
+var getImgName = function(volpage) {
+    var p=volpage.split(".");
+    var v="000"+p[0];
+    var vol=v.substr(v.length-3,v.length);
+    var pa="000"+p[1].substr(0,p[1].length-1);
+    var page=pa.substr(pa.length-3,pa.length);
+    var side=p[1].substr(p[1].length-1);
+
+    return vol+"/"+vol+"-"+page+side;
+}
+
+
+
+module.exports={getImgName:getImgName};
+},{"ksana-database":"/Users/yu/ksana2015/node_modules/ksana-database/index.js","ksana-search":"/Users/yu/ksana2015/node_modules/ksana-search/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/catalogarea.jsx":[function(require,module,exports){
 var React=require("react");
 var Reflux=require("reflux");
 var actions_text=require("./actions_text");
@@ -6658,7 +6679,7 @@ var Catalogarea=React.createClass({displayName: "Catalogarea",
     var res=this.props.db.fileSegFromVpos(this.props.toc[n].voff);
     if(res.file != -1) actions_text.showPage(res.file,res.seg); //this.showPage(res.file,res.seg);
     //this.setState({dataN:n});    
-    console.log(res);
+    //console.log(res);
   },
 	render:function() {
 		return React.createElement("div", null, 
@@ -6677,7 +6698,6 @@ var Reflux=require("reflux");
 var actions_toc=require("./actions_toc");
 var store_toc=require("./store_toc");
 var store_text=require("./store_text");
-//var api_text=require("./api_text");
 var Fileinstaller=require("ksana2015-webruntime").fileinstaller;
 var require_kdb=[{
   filename:"jiangkangyur.kdb"  , 
@@ -6761,18 +6781,41 @@ module.exports=Searcharea;
 },{"react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/showseg.jsx":[function(require,module,exports){
 var React=require("react");
 var Reflux=require("reflux");
+var api_text=require("./api_text.js");
 
 var Showseg=React.createClass({displayName: "Showseg",
-	render:function() {
+	openImg:function() {
+		this.refs.dictdialog.getDOMNode().classList.add("opened");
+		console.log(this.props.segs.pb);
+	},
+	closeImg:function() {
+		$("span[vpos]").removeClass("scrolled");
+	},
+	// renderImg: function(pb) {
+	// 	console.log(this.props.segs.pb);
+	// },
+	renderPb:function(pb) {
 		return React.createElement("div", null, 
-			this.props.segs.pb, React.createElement("br", null), 
+			React.createElement("a", {onClick: this.openImg}, pb, React.createElement("img", {width: "25", src: "banner/imageicon.png"}))
+		)
+	},
+	render:function() {
+		var linkedPb=this.renderPb(this.props.segs.pb);
+		//console.log(api_text.getImgName(this.props.segs.pb));   //className={"pbImg"+opened}
+		return React.createElement("div", null, 
+			React.createElement("br", null), linkedPb, 
+		    React.createElement("div", {className: "pbImg", ref: "dictdialog"}, 
+			    React.createElement("a", {href: "#", onClick: this.closeDialog, 
+			      title: "Close", className: "modalClose"}, " X ")
+			    
+		    ), 
 			React.createElement("div", {dangerouslySetInnerHTML: {__html:this.props.segs.text}})
       	)
 	}
 });
 
 module.exports=Showseg;
-},{"react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/showtext.jsx":[function(require,module,exports){
+},{"./api_text.js":"/Users/yu/ksana2015/reAdarsha/src/api_text.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/showtext.jsx":[function(require,module,exports){
 var React=require("react");
 var Reflux=require("reflux");
 var store_text=require("./store_text");
@@ -6945,33 +6988,47 @@ module.exports=Textarea;
 var React=require("react");
 var actions_text=require("./actions_text");
 var Textcontrollbar=React.createClass({displayName: "Textcontrollbar",
-	renderSideMenuButton: function(){
-		return "hide menu btn";
-	},
-	getAddress: function(){
+  renderSideMenuButton: function(){
+    return "hide menu btn";
+  },
+  getAddress: function(){
 
-	},
-      goPrevFile: function() {
-            actions_text.prevFile();
-      },
-      goNextFile: function() {
-            actions_text.nextFile();
-      },
-	render:function() {
-		return React.createElement("div", {className: "controlbar"}, 
-      		this.renderSideMenuButton(), 
-            React.createElement("button", {className: "btn btn-default", title: "Previous File", onClick: this.goPrevFile}, React.createElement("img", {width: "20", src: "./banner/prev.png"})), 
-            React.createElement("button", {className: "btn btn-default", title: "Next File", onClick: this.goNextFile}, React.createElement("img", {width: "20", src: "./banner/next.png"})), 
+  },
+  goPrevFile: function() {
+    actions_text.prevFile();
+  },
+  goNextFile: function() {
+    actions_text.nextFile();
+  },
+  // increasefontsize:function() {
+  //   var fontsize=parseFloat($(".pagetext").css("font-size"));
+  //   fontsize=fontsize*1.1;
+  //   if (fontsize>40) return;
+  //   $(".pagetext").css("font-size",fontsize+"px")
+  //                 .css("line-height",(fontsize*1.7)+"px");
+  // },
+  // decreasefontsize:function() {
+  //   var fontsize=parseFloat($(".pagetext").css("font-size"));
+  //   fontsize=fontsize/1.1;
+  //   if (fontsize<12) return;
+  //   $(".pagetext").css("font-size",fontsize+"px")
+  //   .css("line-height",(fontsize*1.7)+"px");
+  // },
+  render:function() {
+	return React.createElement("div", {className: "controlbar"}, 
+		this.renderSideMenuButton(), 
+      React.createElement("button", {className: "btn btn-default", title: "Previous File", onClick: this.goPrevFile}, React.createElement("img", {width: "20", src: "./banner/prev.png"})), 
+      React.createElement("button", {className: "btn btn-default", title: "Next File", onClick: this.goNextFile}, React.createElement("img", {width: "20", src: "./banner/next.png"})), 
 
-            React.createElement("a", {href: "http://www.dharma-treasure.org/en/contact-us/", target: "_new"}, React.createElement("button", {className: "btn btn-default right", title: "Contact Us"}, React.createElement("img", {width: "20", src: "./banner/icon-info.png"}))), 
-            React.createElement("button", {className: "btn btn-default right", title: "Toggle Wylie Transliteration", onClick: this.props.setwylie}, React.createElement("img", {width: "20", src: "./banner/icon-towylie.png"})), 
+      React.createElement("a", {href: "http://www.dharma-treasure.org/en/contact-us/", target: "_new"}, React.createElement("button", {className: "btn btn-default right", title: "Contact Us"}, React.createElement("img", {width: "20", src: "./banner/icon-info.png"}))), 
+      React.createElement("button", {className: "btn btn-default right", title: "Toggle Wylie Transliteration", onClick: this.props.setwylie}, React.createElement("img", {width: "20", src: "./banner/icon-towylie.png"})), 
 
-            React.createElement("button", {className: "btn btn-default right", title: "Increase Font Size", onClick: this.increasefontsize}, React.createElement("img", {width: "20", src: "./banner/increasefontsize.png"})), 
-            React.createElement("button", {className: "btn btn-default right", title: "Decrease Font Size", onClick: this.decreasefontsize}, React.createElement("img", {width: "20", src: "./banner/decreasefontsize.png"})), 
-            React.createElement("br", null), 
-            React.createElement("br", null), React.createElement("span", {id: "address", dangerouslySetInnerHTML: {__html:this.getAddress()}})
-      	)
-	}
+      React.createElement("button", {className: "btn btn-default right", title: "Increase Font Size", onClick: this.increasefontsize}, React.createElement("img", {width: "20", src: "./banner/increasefontsize.png"})), 
+      React.createElement("button", {className: "btn btn-default right", title: "Decrease Font Size", onClick: this.decreasefontsize}, React.createElement("img", {width: "20", src: "./banner/decreasefontsize.png"})), 
+      React.createElement("br", null), 
+      React.createElement("br", null), React.createElement("span", {id: "address", dangerouslySetInnerHTML: {__html:this.getAddress()}})
+	)
+  }
 });
 
 module.exports=Textcontrollbar;

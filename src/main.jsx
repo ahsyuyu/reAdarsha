@@ -3,7 +3,6 @@ var Reflux=require("reflux");
 var actions_toc=require("./actions_toc");
 var store_toc=require("./store_toc");
 var store_text=require("./store_text");
-//var api_text=require("./api_text");
 var Fileinstaller=require("ksana2015-webruntime").fileinstaller;
 var require_kdb=[{
   filename:"jiangkangyur.kdb"  , 
