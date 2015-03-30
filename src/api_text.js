@@ -1,5 +1,9 @@
 var kse=require("ksana-search"); // Ksana Search Engine (run at client side)
 var kde=require("ksana-database");  // Ksana Database Engine
+// var jPedurma=require("./jPedurma");
+// var dPedurma=require("./dPedurma");
+// var hPedurma=require("./hPedurma");
+// var mappings={"J":jPedurma,"D":dPedurma,"H":hPedurma};
 var DATABASE;
 // kde.open("jiangkangyur",function(a,db){
 // 	DATABASE = db;

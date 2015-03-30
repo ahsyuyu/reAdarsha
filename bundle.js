@@ -6648,6 +6648,10 @@ module.exports=actions_toc;
 },{"reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/api_text.js":[function(require,module,exports){
 var kse=require("ksana-search"); // Ksana Search Engine (run at client side)
 var kde=require("ksana-database");  // Ksana Database Engine
+// var jPedurma=require("./jPedurma");
+// var dPedurma=require("./dPedurma");
+// var hPedurma=require("./hPedurma");
+// var mappings={"J":jPedurma,"D":dPedurma,"H":hPedurma};
 var DATABASE;
 // kde.open("jiangkangyur",function(a,db){
 // 	DATABASE = db;
@@ -6794,16 +6798,14 @@ var Showseg=React.createClass({displayName: "Showseg",
 	renderImg: function() {
 		
 	},
-	//content:url(http://res.cloudinary.com/www-dharma-treasure-org/image/upload/lijiang/001/001-002a.jpg);
 	render:function() {
 		var imgName=api_text.getImgName(this.props.segs.pb)
 		var img={content:"url(http://res.cloudinary.com/www-dharma-treasure-org/image/upload/lijiang/"+imgName+")"};
 		return React.createElement("div", null, 
 			React.createElement("br", null), 
 			React.createElement("a", {onClick: this.openImg}, this.props.segs.pb, React.createElement("img", {width: "25", src: "banner/imageicon.png"})), 
-			    React.createElement("div", {"data-pb": this.props.segs.pb}, 
-				    React.createElement("img", {onClick: this.closeImg, className: "pbImg", ref: "dictdialog", "data-pb": this.props.segs.pb, style: img})
-			    ), 
+				React.createElement("br", null), 
+				React.createElement("img", {onClick: this.closeImg, className: "pbImg", ref: "dictdialog", "data-pb": this.props.segs.pb, style: img}), 
 			React.createElement("div", {dangerouslySetInnerHTML: {__html:this.props.segs.text}})
       	)
 	}
@@ -6850,7 +6852,7 @@ var Showtext=React.createClass({displayName: "Showtext",
 	      segs.push(React.createElement(Showseg, {segs: item}));
 	    });
 		//<div dangerouslySetInnerHTML={{__html:this.state.bodytext.text}}></div>
-		return React.createElement("div", {className: "showtext"}, 
+		return React.createElement("div", {className: "pagetext"}, 
       		segs
       	)
 	}
@@ -6982,6 +6984,7 @@ module.exports=Textarea;
 },{"./actions_text":"/Users/yu/ksana2015/reAdarsha/src/actions_text.js","./showtext.jsx":"/Users/yu/ksana2015/reAdarsha/src/showtext.jsx","./store_text":"/Users/yu/ksana2015/reAdarsha/src/store_text.js","./store_toc":"/Users/yu/ksana2015/reAdarsha/src/store_toc.js","./textcontrollbar.jsx":"/Users/yu/ksana2015/reAdarsha/src/textcontrollbar.jsx","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/textcontrollbar.jsx":[function(require,module,exports){
 var React=require("react");
 var actions_text=require("./actions_text");
+
 var Textcontrollbar=React.createClass({displayName: "Textcontrollbar",
   renderSideMenuButton: function(){
     return "hide menu btn";
@@ -6995,20 +6998,20 @@ var Textcontrollbar=React.createClass({displayName: "Textcontrollbar",
   goNextFile: function() {
     actions_text.nextFile();
   },
-  // increasefontsize:function() {
-  //   var fontsize=parseFloat($(".pagetext").css("font-size"));
-  //   fontsize=fontsize*1.1;
-  //   if (fontsize>40) return;
-  //   $(".pagetext").css("font-size",fontsize+"px")
-  //                 .css("line-height",(fontsize*1.7)+"px");
-  // },
-  // decreasefontsize:function() {
-  //   var fontsize=parseFloat($(".pagetext").css("font-size"));
-  //   fontsize=fontsize/1.1;
-  //   if (fontsize<12) return;
-  //   $(".pagetext").css("font-size",fontsize+"px")
-  //   .css("line-height",(fontsize*1.7)+"px");
-  // },
+  increasefontsize:function() {
+    var fontsize=parseFloat($(".pagetext").css("font-size"));
+    fontsize=fontsize*1.1;
+    if (fontsize>40) return;
+    $(".pagetext").css("font-size",fontsize+"px")
+                  .css("line-height",(fontsize*1.7)+"px");
+  },
+  decreasefontsize:function() {
+    var fontsize=parseFloat($(".pagetext").css("font-size"));
+    fontsize=fontsize/1.1;
+    if (fontsize<12) return;
+    $(".pagetext").css("font-size",fontsize+"px")
+    .css("line-height",(fontsize*1.7)+"px");
+  },
   render:function() {
 	return React.createElement("div", {className: "controlbar"}, 
 		this.renderSideMenuButton(), 

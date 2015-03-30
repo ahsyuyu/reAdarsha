@@ -28,7 +28,9 @@ div.current {color:black; background:white ;border-bottom-right-radius:10px 10px
 div.current:hover {background:#D8F6CE;}
 /*stacktoc*/
 
-.showtext a {color: #178918; cursor: pointer;}
+.pagetext a {color: #178918; cursor: pointer;}
 
-.pbImg {width: 0%; opacity: 0; transition: width 0.5s;}
+.pagetext {padding-top:70px; line-height: 30px; font-size: 125%; cursor:default;}
+
+.pbImg {width: 0%; opacity: 0; transition: width 0.5s, opacity 0.5s;}
 .pbImg.opened {width: 100%; opacity:1; }

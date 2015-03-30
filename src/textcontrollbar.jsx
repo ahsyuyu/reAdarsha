@@ -1,5 +1,6 @@
 var React=require("react");
 var actions_text=require("./actions_text");
+
 var Textcontrollbar=React.createClass({
   renderSideMenuButton: function(){
     return "hide menu btn";
@@ -13,20 +14,20 @@ var Textcontrollbar=React.createClass({
   goNextFile: function() {
     actions_text.nextFile();
   },
-  // increasefontsize:function() {
-  //   var fontsize=parseFloat($(".pagetext").css("font-size"));
-  //   fontsize=fontsize*1.1;
-  //   if (fontsize>40) return;
-  //   $(".pagetext").css("font-size",fontsize+"px")
-  //                 .css("line-height",(fontsize*1.7)+"px");
-  // },
-  // decreasefontsize:function() {
-  //   var fontsize=parseFloat($(".pagetext").css("font-size"));
-  //   fontsize=fontsize/1.1;
-  //   if (fontsize<12) return;
-  //   $(".pagetext").css("font-size",fontsize+"px")
-  //   .css("line-height",(fontsize*1.7)+"px");
-  // },
+  increasefontsize:function() {
+    var fontsize=parseFloat($(".pagetext").css("font-size"));
+    fontsize=fontsize*1.1;
+    if (fontsize>40) return;
+    $(".pagetext").css("font-size",fontsize+"px")
+                  .css("line-height",(fontsize*1.7)+"px");
+  },
+  decreasefontsize:function() {
+    var fontsize=parseFloat($(".pagetext").css("font-size"));
+    fontsize=fontsize/1.1;
+    if (fontsize<12) return;
+    $(".pagetext").css("font-size",fontsize+"px")
+    .css("line-height",(fontsize*1.7)+"px");
+  },
   render:function() {
 	return <div className="controlbar">
 		{this.renderSideMenuButton()}            

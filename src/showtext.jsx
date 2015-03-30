@@ -37,7 +37,7 @@ var Showtext=React.createClass({
 	      segs.push(<Showseg segs={item} />);
 	    });
 		//<div dangerouslySetInnerHTML={{__html:this.state.bodytext.text}}></div>
-		return <div className="showtext" >
+		return <div className="pagetext" >
       		{segs}
       	</div>
 	}
