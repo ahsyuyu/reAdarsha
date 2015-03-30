@@ -6786,29 +6786,24 @@ var api_text=require("./api_text.js");
 var Showseg=React.createClass({displayName: "Showseg",
 	openImg:function() {
 		this.refs.dictdialog.getDOMNode().classList.add("opened");
-		console.log(this.props.segs.pb);
+		//$('img[data-pb="'+this.props.segs.pb+'"]').attr("scr","http://res.cloudinary.com/www-dharma-treasure-org/image/upload/lijiang/001/001-002a.jpg");
 	},
 	closeImg:function() {
-		$("span[vpos]").removeClass("scrolled");
+		$('img[data-pb="'+this.props.segs.pb+'"]').removeClass("opened");
 	},
-	// renderImg: function(pb) {
-	// 	console.log(this.props.segs.pb);
-	// },
-	renderPb:function(pb) {
-		return React.createElement("div", null, 
-			React.createElement("a", {onClick: this.openImg}, pb, React.createElement("img", {width: "25", src: "banner/imageicon.png"}))
-		)
+	renderImg: function() {
+		
 	},
+	//content:url(http://res.cloudinary.com/www-dharma-treasure-org/image/upload/lijiang/001/001-002a.jpg);
 	render:function() {
-		var linkedPb=this.renderPb(this.props.segs.pb);
-		//console.log(api_text.getImgName(this.props.segs.pb));   //className={"pbImg"+opened}
+		var imgName=api_text.getImgName(this.props.segs.pb)
+		var img={content:"url(http://res.cloudinary.com/www-dharma-treasure-org/image/upload/lijiang/"+imgName+")"};
 		return React.createElement("div", null, 
-			React.createElement("br", null), linkedPb, 
-		    React.createElement("div", {className: "pbImg", ref: "dictdialog"}, 
-			    React.createElement("a", {href: "#", onClick: this.closeDialog, 
-			      title: "Close", className: "modalClose"}, " X ")
-			    
-		    ), 
+			React.createElement("br", null), 
+			React.createElement("a", {onClick: this.openImg}, this.props.segs.pb, React.createElement("img", {width: "25", src: "banner/imageicon.png"})), 
+			    React.createElement("div", {"data-pb": this.props.segs.pb}, 
+				    React.createElement("img", {onClick: this.closeImg, className: "pbImg", ref: "dictdialog", "data-pb": this.props.segs.pb, style: img})
+			    ), 
 			React.createElement("div", {dangerouslySetInnerHTML: {__html:this.props.segs.text}})
       	)
 	}
