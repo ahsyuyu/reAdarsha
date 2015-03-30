@@ -6670,7 +6670,47 @@ var getImgName = function(volpage) {
 
 
 module.exports={getImgName:getImgName};
-},{"ksana-database":"/Users/yu/ksana2015/node_modules/ksana-database/index.js","ksana-search":"/Users/yu/ksana2015/node_modules/ksana-search/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/catalogarea.jsx":[function(require,module,exports){
+},{"ksana-database":"/Users/yu/ksana2015/node_modules/ksana-database/index.js","ksana-search":"/Users/yu/ksana2015/node_modules/ksana-search/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/banner.jsx":[function(require,module,exports){
+var React=require("react");
+var Reflux=require("reflux");
+
+var Banner=React.createClass({displayName: "Banner",
+  componentWillUnmount:function() {
+    window.removeEventListener('resize', this.handleResize);
+  },
+  componentDidMount:function() {
+    var that=this;
+    setTimeout(function(){
+      that.hideBanner();
+    },5000);
+    //window.onhashchange = function () {that.goHashTag();} 
+    window.addEventListener('resize', this.handleResize);
+  }, 
+  hideBanner:function() {
+    var header=$("div.header");
+    var that=this;
+    header.animate({height: "0px"}, 2000, function() {
+      header.hide();
+      that.bannerHeight=0;
+      that.setBannerHeight(0);
+    });
+  },
+  handleResize:function() {
+    clearTimeout(this.resizetimer);
+    var that=this;
+    this.resizetimer=setTimeout(function(){
+      that.setBannerHeight(that.bannerHeight);
+    },300);
+  },
+  render:function() {
+ 	return React.createElement("div", {className: "header"}, 
+      React.createElement("img", {width: "100%", src: "./banner/banner.png"})
+    )
+	}
+});
+
+module.exports=Banner;
+},{"react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/catalogarea.jsx":[function(require,module,exports){
 var React=require("react");
 var Reflux=require("reflux");
 var actions_text=require("./actions_text");
@@ -6709,6 +6749,7 @@ var require_kdb=[{
 }];
 var Tabarea=require("./tabarea.jsx");
 var Textarea=require("./textarea.jsx");
+var Banner=require("./banner.jsx");
 
 var Maincomponent = React.createClass({displayName: "Maincomponent",
   mixins:[Reflux.listenTo(store_toc,"onStoreToc")],
@@ -6720,33 +6761,7 @@ var Maincomponent = React.createClass({displayName: "Maincomponent",
   	if(data.length) this.setState({toc:data});
     else this.setState({db:data});
   },
-  componentWillUnmount:function() {
-    window.removeEventListener('resize', this.handleResize);
-  },
-  componentDidMount:function() {
-    var that=this;
-    setTimeout(function(){
-      that.hideBanner();
-    },5000);
-    //window.onhashchange = function () {that.goHashTag();} 
-    window.addEventListener('resize', this.handleResize);
-  }, 
-  hideBanner:function() {
-    var header=$("div.header");
-    var that=this;
-    header.animate({height: "0px"}, 2000, function() {
-      header.hide();
-      that.bannerHeight=0;
-      that.setBannerHeight(0);
-    });
-  },
-  handleResize:function() {
-    clearTimeout(this.resizetimer);
-    var that=this;
-    this.resizetimer=setTimeout(function(){
-      that.setBannerHeight(that.bannerHeight);
-    },300);
-  },
+  
   openFileinstaller:function(autoclose) {
     if (window.location.origin.indexOf("http://127.0.0.1")==0) {
       require_kdb[0].url=window.location.origin+window.location.pathname+"jiangkangyur.kdb";
@@ -6756,9 +6771,7 @@ var Maincomponent = React.createClass({displayName: "Maincomponent",
   },
   render: function() {
     return React.createElement("div", {className: "row"}, 
-      React.createElement("div", {className: "header"}, 
-        React.createElement("img", {width: "100%", src: "./banner/banner.png"})
-      ), 
+      React.createElement(Banner, null), 
       this.state.fi, 
       React.createElement("div", {className: "col-md-4"}, 
       	React.createElement(Tabarea, {db: this.state.db, toc: this.state.toc})
@@ -6770,7 +6783,33 @@ var Maincomponent = React.createClass({displayName: "Maincomponent",
   }
 });
 module.exports=Maincomponent;
-},{"./actions_toc":"/Users/yu/ksana2015/reAdarsha/src/actions_toc.js","./store_text":"/Users/yu/ksana2015/reAdarsha/src/store_text.js","./store_toc":"/Users/yu/ksana2015/reAdarsha/src/store_toc.js","./tabarea.jsx":"/Users/yu/ksana2015/reAdarsha/src/tabarea.jsx","./textarea.jsx":"/Users/yu/ksana2015/reAdarsha/src/textarea.jsx","ksana2015-webruntime":"/Users/yu/ksana2015/node_modules/ksana2015-webruntime/index.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/searcharea.jsx":[function(require,module,exports){
+},{"./actions_toc":"/Users/yu/ksana2015/reAdarsha/src/actions_toc.js","./banner.jsx":"/Users/yu/ksana2015/reAdarsha/src/banner.jsx","./store_text":"/Users/yu/ksana2015/reAdarsha/src/store_text.js","./store_toc":"/Users/yu/ksana2015/reAdarsha/src/store_toc.js","./tabarea.jsx":"/Users/yu/ksana2015/reAdarsha/src/tabarea.jsx","./textarea.jsx":"/Users/yu/ksana2015/reAdarsha/src/textarea.jsx","ksana2015-webruntime":"/Users/yu/ksana2015/node_modules/ksana2015-webruntime/index.js","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/resizefontbtn.jsx":[function(require,module,exports){
+var React=require("react");
+var Reflux=require("reflux");
+var Resizefontbtn = React.createClass({displayName: "Resizefontbtn",
+  increasefontsize:function() {
+    var fontsize=parseFloat($(".pagetext").css("font-size"));
+    fontsize=fontsize*1.1;
+    if (fontsize>40) return;
+    $(".pagetext").css("font-size",fontsize+"px")
+                  .css("line-height",(fontsize*1.7)+"px");
+  },
+  decreasefontsize:function() {
+    var fontsize=parseFloat($(".pagetext").css("font-size"));
+    fontsize=fontsize/1.1;
+    if (fontsize<12) return;
+    $(".pagetext").css("font-size",fontsize+"px")
+    .css("line-height",(fontsize*1.7)+"px");
+  },
+  render: function() {   
+   return React.createElement("div", {className: "inline"}, 
+            React.createElement("button", {className: "btn btn-default right", title: "Increase Font Size", onClick: this.increasefontsize}, React.createElement("img", {width: "20", src: "./banner/increasefontsize.png"})), 
+            React.createElement("button", {className: "btn btn-default right", title: "Decrease Font Size", onClick: this.decreasefontsize}, React.createElement("img", {width: "20", src: "./banner/decreasefontsize.png"}))
+          )
+  }  
+});
+module.exports=Resizefontbtn;
+},{"react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/searcharea.jsx":[function(require,module,exports){
 var React=require("react");
 
 var Searcharea=React.createClass({displayName: "Searcharea",
@@ -6782,7 +6821,21 @@ render:function() {
 });
 
 module.exports=Searcharea;
-},{"react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/showseg.jsx":[function(require,module,exports){
+},{"react":"react"}],"/Users/yu/ksana2015/reAdarsha/src/showaddress.jsx":[function(require,module,exports){
+var React=require("react");
+var Reflux=require("reflux");
+var Showaddress = React.createClass({displayName: "Showaddress",
+  getAddress: function(){
+    return "render address";
+  },
+  render: function() {   
+   return React.createElement("div", null, 
+            React.createElement("span", {id: "address", dangerouslySetInnerHTML: {__html:this.getAddress()}})
+          )
+  }  
+});
+module.exports=Showaddress;
+},{"react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/showseg.jsx":[function(require,module,exports){
 var React=require("react");
 var Reflux=require("reflux");
 var api_text=require("./api_text.js");
@@ -6790,10 +6843,11 @@ var api_text=require("./api_text.js");
 var Showseg=React.createClass({displayName: "Showseg",
 	openImg:function() {
 		this.refs.dictdialog.getDOMNode().classList.add("opened");
-		//$('img[data-pb="'+this.props.segs.pb+'"]').attr("scr","http://res.cloudinary.com/www-dharma-treasure-org/image/upload/lijiang/001/001-002a.jpg");
+		this.refs.closeBtn.getDOMNode().classList.add("opened");	
 	},
 	closeImg:function() {
 		$('img[data-pb="'+this.props.segs.pb+'"]').removeClass("opened");
+		$('a[data-pb="'+this.props.segs.pb+'"]').removeClass("opened");
 	},
 	renderImg: function() {
 		
@@ -6804,7 +6858,7 @@ var Showseg=React.createClass({displayName: "Showseg",
 		return React.createElement("div", null, 
 			React.createElement("br", null), 
 			React.createElement("a", {onClick: this.openImg}, this.props.segs.pb, React.createElement("img", {width: "25", src: "banner/imageicon.png"})), 
-				React.createElement("br", null), 
+				React.createElement("a", {onClick: this.closeImg, className: "pbImg", ref: "closeBtn", "data-pb": this.props.segs.pb}, "Close Image"), React.createElement("br", null), 
 				React.createElement("img", {onClick: this.closeImg, className: "pbImg", ref: "dictdialog", "data-pb": this.props.segs.pb, style: img}), 
 			React.createElement("div", {dangerouslySetInnerHTML: {__html:this.props.segs.text}})
       	)
@@ -6823,7 +6877,7 @@ var Showtext=React.createClass({displayName: "Showtext",
 		return {text:""}
 	},
 	onStoreText: function(data){
-		this.setState({text:data});
+		if(typeof data != "boolean") this.setState({text:data});
     },
 	getSegsFromFile: function(file) {
 		var segs=[], pb=[], text=[];
@@ -6935,7 +6989,7 @@ module.exports=store_toc;
 var React=require("react");
 var Stacktoc=require("ksana2015-stacktoc").component;  //載入目錄顯示元件
 var Searcharea=require("./searcharea.jsx");
-var Catalogarea=require("./catalogarea.jsx")
+var Catalogarea=require("./catalogarea.jsx");
 var Tabarea=React.createClass({displayName: "Tabarea",
 	textConverter:function(t) {
 		if(this.props.wylie == true) return tibetan.toWylie(t,null,false); 
@@ -6984,13 +7038,15 @@ module.exports=Textarea;
 },{"./actions_text":"/Users/yu/ksana2015/reAdarsha/src/actions_text.js","./showtext.jsx":"/Users/yu/ksana2015/reAdarsha/src/showtext.jsx","./store_text":"/Users/yu/ksana2015/reAdarsha/src/store_text.js","./store_toc":"/Users/yu/ksana2015/reAdarsha/src/store_toc.js","./textcontrollbar.jsx":"/Users/yu/ksana2015/reAdarsha/src/textcontrollbar.jsx","react":"react","reflux":"/Users/yu/ksana2015/node_modules/reflux/index.js"}],"/Users/yu/ksana2015/reAdarsha/src/textcontrollbar.jsx":[function(require,module,exports){
 var React=require("react");
 var actions_text=require("./actions_text");
+var Resizefontbtn=require("./resizefontbtn.jsx");
+var Showaddress=require("./showaddress.jsx");
 
 var Textcontrollbar=React.createClass({displayName: "Textcontrollbar",
   renderSideMenuButton: function(){
-    return "hide menu btn";
+    return React.createElement("button", {className: "btn btn-default", title: "Hide Side Menu", onClick: this.hideMenu}, React.createElement("img", {width: "20", src: "./banner/hidemenu.png"}))
   },
-  getAddress: function(){
-
+  hideMenu: function(){
+    actions_text.hideMenu();
   },
   goPrevFile: function() {
     actions_text.prevFile();
@@ -6998,39 +7054,23 @@ var Textcontrollbar=React.createClass({displayName: "Textcontrollbar",
   goNextFile: function() {
     actions_text.nextFile();
   },
-  increasefontsize:function() {
-    var fontsize=parseFloat($(".pagetext").css("font-size"));
-    fontsize=fontsize*1.1;
-    if (fontsize>40) return;
-    $(".pagetext").css("font-size",fontsize+"px")
-                  .css("line-height",(fontsize*1.7)+"px");
-  },
-  decreasefontsize:function() {
-    var fontsize=parseFloat($(".pagetext").css("font-size"));
-    fontsize=fontsize/1.1;
-    if (fontsize<12) return;
-    $(".pagetext").css("font-size",fontsize+"px")
-    .css("line-height",(fontsize*1.7)+"px");
-  },
   render:function() {
-	return React.createElement("div", {className: "controlbar"}, 
-		this.renderSideMenuButton(), 
+	return React.createElement("div", {className: "controlbar inline"}, 
+		  this.renderSideMenuButton(), 
       React.createElement("button", {className: "btn btn-default", title: "Previous File", onClick: this.goPrevFile}, React.createElement("img", {width: "20", src: "./banner/prev.png"})), 
       React.createElement("button", {className: "btn btn-default", title: "Next File", onClick: this.goNextFile}, React.createElement("img", {width: "20", src: "./banner/next.png"})), 
-
-      React.createElement("a", {href: "http://www.dharma-treasure.org/en/contact-us/", target: "_new"}, React.createElement("button", {className: "btn btn-default right", title: "Contact Us"}, React.createElement("img", {width: "20", src: "./banner/icon-info.png"}))), 
-      React.createElement("button", {className: "btn btn-default right", title: "Toggle Wylie Transliteration", onClick: this.props.setwylie}, React.createElement("img", {width: "20", src: "./banner/icon-towylie.png"})), 
-
-      React.createElement("button", {className: "btn btn-default right", title: "Increase Font Size", onClick: this.increasefontsize}, React.createElement("img", {width: "20", src: "./banner/increasefontsize.png"})), 
-      React.createElement("button", {className: "btn btn-default right", title: "Decrease Font Size", onClick: this.decreasefontsize}, React.createElement("img", {width: "20", src: "./banner/decreasefontsize.png"})), 
-      React.createElement("br", null), 
-      React.createElement("br", null), React.createElement("span", {id: "address", dangerouslySetInnerHTML: {__html:this.getAddress()}})
+      React.createElement("div", {className: "rightControlbar inline"}, 
+        React.createElement(Resizefontbtn, null), 
+        React.createElement("button", {className: "btn btn-default right", title: "Toggle Wylie Transliteration", onClick: this.props.setwylie}, React.createElement("img", {width: "20", src: "./banner/icon-towylie.png"})), 
+        React.createElement("a", {href: "http://www.dharma-treasure.org/en/contact-us/", target: "_new"}, React.createElement("button", {className: "btn btn-default right", title: "Contact Us"}, React.createElement("img", {width: "20", src: "./banner/icon-info.png"})))
+      ), 
+      React.createElement(Showaddress, null)
 	)
   }
 });
 
 module.exports=Textcontrollbar;
-},{"./actions_text":"/Users/yu/ksana2015/reAdarsha/src/actions_text.js","react":"react"}]},{},["/Users/yu/ksana2015/reAdarsha/index.js"])
+},{"./actions_text":"/Users/yu/ksana2015/reAdarsha/src/actions_text.js","./resizefontbtn.jsx":"/Users/yu/ksana2015/reAdarsha/src/resizefontbtn.jsx","./showaddress.jsx":"/Users/yu/ksana2015/reAdarsha/src/showaddress.jsx","react":"react"}]},{},["/Users/yu/ksana2015/reAdarsha/index.js"])
 
 
 //# sourceMappingURL=bundle.js.map

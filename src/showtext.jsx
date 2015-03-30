@@ -8,7 +8,7 @@ var Showtext=React.createClass({
 		return {text:""}
 	},
 	onStoreText: function(data){
-		this.setState({text:data});
+		if(typeof data != "boolean") this.setState({text:data});
     },
 	getSegsFromFile: function(file) {
 		var segs=[], pb=[], text=[];

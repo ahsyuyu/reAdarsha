@@ -1,7 +1,7 @@
 var React=require("react");
 var Stacktoc=require("ksana2015-stacktoc").component;  //載入目錄顯示元件
 var Searcharea=require("./searcharea.jsx");
-var Catalogarea=require("./catalogarea.jsx")
+var Catalogarea=require("./catalogarea.jsx");
 var Tabarea=React.createClass({
 	textConverter:function(t) {
 		if(this.props.wylie == true) return tibetan.toWylie(t,null,false); 

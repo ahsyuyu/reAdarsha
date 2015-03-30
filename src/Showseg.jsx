@@ -5,10 +5,11 @@ var api_text=require("./api_text.js");
 var Showseg=React.createClass({
 	openImg:function() {
 		this.refs.dictdialog.getDOMNode().classList.add("opened");
-		//$('img[data-pb="'+this.props.segs.pb+'"]').attr("scr","http://res.cloudinary.com/www-dharma-treasure-org/image/upload/lijiang/001/001-002a.jpg");
+		this.refs.closeBtn.getDOMNode().classList.add("opened");	
 	},
 	closeImg:function() {
 		$('img[data-pb="'+this.props.segs.pb+'"]').removeClass("opened");
+		$('a[data-pb="'+this.props.segs.pb+'"]').removeClass("opened");
 	},
 	renderImg: function() {
 		
@@ -19,7 +20,7 @@ var Showseg=React.createClass({
 		return <div>
 			<br></br>
 			<a onClick={this.openImg}>{this.props.segs.pb}<img width="25" src="banner/imageicon.png"></img></a>
-				<br></br>
+				<a onClick={this.closeImg} className="pbImg" ref="closeBtn" data-pb={this.props.segs.pb}>Close Image</a><br></br>
 				<img onClick={this.closeImg} className="pbImg" ref="dictdialog" data-pb={this.props.segs.pb} style={img}></img>
 			<div dangerouslySetInnerHTML={{__html:this.props.segs.text}}></div>
       	</div>
